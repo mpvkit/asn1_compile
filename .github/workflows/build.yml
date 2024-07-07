@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release'
+        required: true
+        default: 'heimdal-7.8.0'
+
+jobs:
+  Arm64:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: heimdal/heimdal
+          ref: ${{ github.event.inputs.version }}
+      - name: Install dependencies
+        run: |
+          brew install autoconf
+          brew install automake
+          brew install libtool
+          brew install texinfo
+      - name: Build
+        run: |
+          ./autogen.sh
+          ./configure --prefix=/usr/local/bin
+          make
+          make install
+          
+      - name: check asn1_compile
+        run: which asn1_compile
+      - name: check compile_et
+        run: which compile_et
