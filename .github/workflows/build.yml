@@ -35,12 +35,12 @@ jobs:
       - name: Build
         run: |
           ./autogen.sh
-          ./configure --prefix=${{github.workspace}}/buildtools
+          ./configure -disable-shared --prefix=${{github.workspace}}/buildtools
           make
           make install
       - name: Compress build files
         run: |
-          cp -f ${{github.workspace}}/lib/com_err/.libs/compile_et ${{github.workspace}}/buildtools/libexec/heimdal/
+          cp -f ${{github.workspace}}/lib/com_err/compile_et ${{github.workspace}}/buildtools/libexec/heimdal/
           cd ${{github.workspace}}/buildtools/libexec/heimdal/
           tar -czf asn1_compile_${{ matrix.platform.target }}.tar.gz asn1_compile compile_et
       - name: list files
