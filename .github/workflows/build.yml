@@ -9,8 +9,14 @@ on:
         default: 'heimdal-7.8.0'
 
 jobs:
-  Arm64:
-    runs-on: macos-latest
+  build:
+    strategy:
+      matrix:
+        platform:
+          - os: macos-14
+            target: x86_64-apple-darwin
+            
+    runs-on: ${{ matrix.platform.os }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,11 +32,19 @@ jobs:
       - name: Build
         run: |
           ./autogen.sh
-          ./configure --prefix=/usr/local/bin
+          ./configure --prefix=${{github.workspace}}/buildtools
           make
           make install
-          
-      - name: check asn1_compile
-        run: which asn1_compile
-      - name: check compile_et
-        run: which compile_et
+      - name: list files
+        run: ls -al ${{github.workspace}}/buildtools
+      - name: Compress build files
+        run: |
+          cd ${{github.workspace}}/buildtools/libexec/heimdal/
+          tar -czf asn1_compile_${{ matrix.platform.target }}.tar.gz asn1_compile compile_et
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{github.workspace}}/buildtools/libexec/heimdal/*.tar.gz
+          tag: ${{ github.event.inputs.version }}
+          overwrite: true
