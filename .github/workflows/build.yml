@@ -36,9 +36,12 @@ jobs:
           make
           make install
       - name: list files
-        run: ls -al ${{github.workspace}}/buildtools
+        run: ls -al ${{github.workspace}}/buildtools/libexec/heimdal/
+      - name: list files
+        run: ls -al ${{github.workspace}}/lib/com_err/.libs/
       - name: Compress build files
         run: |
+          cp -f ${{github.workspace}}/lib/com_err/.libs/compile_et ${{github.workspace}}/buildtools/libexec/heimdal/
           cd ${{github.workspace}}/buildtools/libexec/heimdal/
           tar -czf asn1_compile_${{ matrix.platform.target }}.tar.gz asn1_compile compile_et
       - name: Upload binaries to release
