@@ -36,15 +36,13 @@ jobs:
           ./configure --prefix=${{github.workspace}}/buildtools
           make
           make install
-      - name: list files
-        run: ls -al ${{github.workspace}}/buildtools/libexec/heimdal/
-      - name: list files
-        run: ls -al ${{github.workspace}}/lib/com_err/.libs/
       - name: Compress build files
         run: |
           cp -f ${{github.workspace}}/lib/com_err/.libs/compile_et ${{github.workspace}}/buildtools/libexec/heimdal/
           cd ${{github.workspace}}/buildtools/libexec/heimdal/
           tar -czf asn1_compile_${{ matrix.platform.target }}.tar.gz asn1_compile compile_et
+      - name: list files
+        run: ls -al ${{github.workspace}}/buildtools/libexec/heimdal/
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
@@ -52,3 +50,4 @@ jobs:
           file: ${{github.workspace}}/buildtools/libexec/heimdal/*.tar.gz
           tag: ${{ github.event.inputs.version }}
           overwrite: true
+          file_glob: true
