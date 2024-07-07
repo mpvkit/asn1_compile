@@ -15,8 +15,8 @@ jobs:
         platform:
           - os: macos-14
             target: aarch64-apple-darwin
-          - os: ubuntu-latest
-            target: x86_64-linux
+          - os: macos-13
+            target: x86_64-apple-darwin
     permissions:
       contents: write
     runs-on: ${{ matrix.platform.os }}
