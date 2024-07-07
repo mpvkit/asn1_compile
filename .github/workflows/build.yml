@@ -18,11 +18,11 @@ jobs:
           ref: ${{ github.event.inputs.version }}
       - name: Install dependencies
         run: |
+          cpan install JSON
           brew install autoconf
           brew install automake
           brew install libtool
           brew install texinfo
-          cpanm JSON
       - name: Build
         run: |
           ./autogen.sh
