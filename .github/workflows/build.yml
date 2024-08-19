@@ -21,11 +21,9 @@ jobs:
       contents: write
     runs-on: ${{ matrix.platform.os }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: devel/lorikeet-heimdal
-          ref: ${{ github.event.inputs.version }}
-          github-server-url: 'https://gitlab.com/samba-team'
+      - name: checkout
+        run: |
+          git clone -b ${{ github.event.inputs.version }} https://gitlab.com/samba-team/devel/lorikeet-heimdal.git .
       - name: Install dependencies
         run: |
           cpan install JSON
