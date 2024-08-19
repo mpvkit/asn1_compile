@@ -23,8 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: heimdal/heimdal
+          repository: devel/lorikeet-heimdal
           ref: ${{ github.event.inputs.version }}
+          github-server-url: 'https://gitlab.com/samba-team'
       - name: Install dependencies
         run: |
           cpan install JSON
@@ -32,6 +33,7 @@ jobs:
           brew install automake
           brew install libtool
           brew install texinfo
+          brew install doxygen
       - name: Build
         run: |
           ./autogen.sh
