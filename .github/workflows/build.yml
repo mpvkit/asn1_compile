@@ -6,7 +6,7 @@ on:
       version:
         description: 'Version to release'
         required: true
-        default: 'heimdal-7.8.0'
+        default: 'samba-4.18.11'
 
 jobs:
   build:
@@ -51,7 +51,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{github.workspace}}/buildtools/libexec/heimdal/*.tar.gz
+          file: ${{github.workspace}}/buildtools/bin/*.tar.gz
           tag: ${{ github.event.inputs.version }}
           overwrite: true
           file_glob: true
