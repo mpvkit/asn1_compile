@@ -21,9 +21,10 @@ jobs:
       contents: write
     runs-on: ${{ matrix.platform.os }}
     steps:
-      - name: checkout
-        run: |
-          git clone -b ${{ github.event.inputs.version }} https://gitlab.com/samba-team/devel/lorikeet-heimdal.git .
+      - uses: actions/checkout@v4
+        with:
+          repository: samba-team/samba
+          ref: ${{ github.event.inputs.version }}
       - name: Install dependencies
         run: |
           cpan install JSON
@@ -34,17 +35,18 @@ jobs:
           brew install doxygen
       - name: Build
         run: |
+          cd ./third_party/heimdal
           ./autogen.sh
           ./configure -disable-shared --prefix=${{github.workspace}}/buildtools
           make
           make install
       - name: Compress build files
         run: |
-          cp -f ${{github.workspace}}/lib/com_err/compile_et ${{github.workspace}}/buildtools/libexec/heimdal/
-          cd ${{github.workspace}}/buildtools/libexec/heimdal/
+          cp -f ${{github.workspace}}/third_party/heimdal/lib/com_err/compile_et ${{github.workspace}}/buildtools/bin/
+          cd ${{github.workspace}}/buildtools/bin
           tar -czf asn1_compile_${{ matrix.platform.target }}.tar.gz asn1_compile compile_et
       - name: list files
-        run: ls -al ${{github.workspace}}/buildtools/libexec/heimdal/
+        run: ls -al ${{github.workspace}}/buildtools/bin/
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
